@@ -2,6 +2,9 @@
 
 Runway Wallet is a polished MVP for an AI-powered financial command center. It combines a personal-finance dashboard, goal tracking, a mock AI copilot, and an educational paper-trading robot in one dark-mode-first interface.
 
+<img width="1920" height="944" alt="{A453BF6E-2D85-4479-A82C-3720A833520E}" src="https://github.com/user-attachments/assets/30d76774-308e-4b97-9a67-37574ba43a71" />
+
+
 ## Run locally
 
 ```bash
