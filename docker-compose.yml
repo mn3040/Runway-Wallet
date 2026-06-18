@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: runway_wallet
+      POSTGRES_USER: runway
+      POSTGRES_PASSWORD: runway_local
+    ports:
+      - "5432:5432"
+    volumes:
+      - runway_postgres:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+
+volumes:
+  runway_postgres:

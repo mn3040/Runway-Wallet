@@ -31,7 +31,7 @@ export const allocation = [
 ];
 
 export type Goal = {
-  id: number;
+  id: number | string;
   title: string;
   category: string;
   current: number;

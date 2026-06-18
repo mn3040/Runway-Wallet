@@ -7,6 +7,8 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  Line,
+  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -15,6 +17,7 @@ import {
   YAxis,
 } from "recharts";
 import { allocation, backtest, netWorthHistory, spending } from "@/lib/mock-data";
+import { EquityPoint } from "@/lib/trading-engine";
 
 const tooltipStyle = {
   backgroundColor: "#15181e",
@@ -67,6 +70,38 @@ export function BacktestChart() {
         <Bar dataKey="robot" name="Robot" fill="#6ee7b7" radius={[4, 4, 0, 0]} />
         <Bar dataKey="benchmark" name="Benchmark" fill="#343840" radius={[4, 4, 0, 0]} />
       </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function ResearchEquityChart({ data }: { data: EquityPoint[] }) {
+  return (
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={data} margin={{ top: 10, right: 8, left: -8, bottom: 0 }}>
+        <CartesianGrid vertical={false} stroke="rgba(255,255,255,.05)" />
+        <XAxis
+          dataKey="date"
+          axisLine={false}
+          tickLine={false}
+          minTickGap={45}
+          tick={{ fill: "#71717a", fontSize: 10 }}
+          tickFormatter={(value) => String(value).slice(0, 7)}
+        />
+        <YAxis
+          axisLine={false}
+          tickLine={false}
+          width={58}
+          tick={{ fill: "#71717a", fontSize: 10 }}
+          tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`}
+        />
+        <Tooltip
+          contentStyle={tooltipStyle}
+          labelFormatter={(value) => String(value)}
+          formatter={(value, name) => [`$${Number(value).toLocaleString()}`, name === "robot" ? "ML robot" : "Buy & hold"]}
+        />
+        <Line type="monotone" dataKey="robot" stroke="#6ee7b7" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="benchmark" stroke="#71717a" strokeWidth={1.5} dot={false} />
+      </LineChart>
     </ResponsiveContainer>
   );
 }

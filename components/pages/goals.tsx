@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar, Plus, Target, Trash2, X } from "lucide-react";
 import { Goal, initialGoals } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/utils";
@@ -10,10 +10,25 @@ export function Goals() {
   const [goals, setGoals] = useState<Goal[]>(initialGoals);
   const [adding, setAdding] = useState(false);
 
+  useEffect(() => {
+    fetch("/api/state").then((response) => response.json()).then((data) => {
+      if (Array.isArray(data.goals)) setGoals(data.goals);
+    }).catch(() => undefined);
+  }, []);
+
+  function persist(next: Goal[]) {
+    setGoals(next);
+    fetch("/api/state", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goals: next }),
+    }).catch(() => undefined);
+  }
+
   function addGoal(formData: FormData) {
     const target = Number(formData.get("target")) || 10000;
-    setGoals((current) => [...current, {
-      id: Date.now(),
+    persist([...goals, {
+      id: crypto.randomUUID(),
       title: String(formData.get("title") || "New goal"),
       category: String(formData.get("category") || "Custom goal"),
       current: Number(formData.get("current")) || 0,
@@ -47,7 +62,7 @@ export function Goals() {
             <Card key={goal.id} className="group p-5 sm:p-6">
               <div className="flex items-start justify-between">
                 <span className="grid size-10 place-items-center rounded-xl" style={{ backgroundColor: `${goal.color}16`, color: goal.color }}><Target size={18} /></span>
-                <button onClick={() => setGoals((current) => current.filter((item) => item.id !== goal.id))} className="text-zinc-700 opacity-0 transition hover:text-rose-400 group-hover:opacity-100" aria-label={`Delete ${goal.title}`}><Trash2 size={16} /></button>
+                <button onClick={() => persist(goals.filter((item) => item.id !== goal.id))} className="text-zinc-700 opacity-0 transition hover:text-rose-400 group-hover:opacity-100" aria-label={`Delete ${goal.title}`}><Trash2 size={16} /></button>
               </div>
               <p className="eyebrow mt-6">{goal.category}</p>
               <h2 className="mt-2 text-lg font-semibold">{goal.title}</h2>

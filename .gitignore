@@ -3,6 +3,7 @@
 
 # next.js
 /.next/
+/.next-dev/
 /out/
 
 # production
@@ -12,6 +13,7 @@
 .DS_Store
 *.pem
 .env*
+/.runway-data/
 
 # debug
 npm-debug.log*
